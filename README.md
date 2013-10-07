@@ -1,5 +1,7 @@
 # SimpleHashtag
 
+[![Gem Version](https://badge.fury.io/rb/simple_hashtag.png)](http://badge.fury.io/rb/simple_hashtag)
+
 Ruby gem for Rails that parses, stores, retreives and formats hashtags in your model.
 
 _Simple Hashtag_ is a mix between–well–hashtags, as we know them, and categories.  
