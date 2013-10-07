@@ -71,18 +71,33 @@ Helpers are also available to create a link when displaying the text.
 
 ### Controller and Views
 If you don't want to bother looking at the genrerated controller and views, here is a quick peek.  
-In a Controller, search for a Hashtag, and its associated records:
+In a Controller, display all hashtags, or search for a Hashtag and its associated records:
 ```ruby
 class HashtagsController < ApplicationController
   def index
+    @hashtags = SimpleHashtag::Hashtag.all
+  end
+
+  def show
     @hashtag = SimpleHashtag::Hashtag.find_by_name(params[:hashtag])
     @hashtagged = @hashtag.hashtaggables if @hashtag
   end
 end
 ```
 
+The views could resemble something like this:
 
-The index view could resemble something like this:
+Index:
+```erb
+<h1>Hashtags</h1>
+<ul>
+<% @hashtags.each do |hashtag| %>
+  <li><%= link_to hashtag.name, hashtag_path(hashtag.name) %></li>
+<% end -%>
+</ul>
+```
+
+Show:
 ```erb
 <h1><%= params[:hashtag] %></h1>
 <% if @hashtagged %>
@@ -100,9 +115,10 @@ In the gem it is actually extracted in a helper.
 
 ### Routes
 
-If you use the provided controller and views, add this line to your `config/routes.rb` file:
+If you use the provided controller and views, the generator will add two routes to your app:
 ```ruby
-get 'hashtags/:hashtag',  to: 'hashtags#index',     as: :hashtag
+get 'hashtags/',         to: 'hashtags#index',     as: :hashtags
+get 'hashtags/:hashtag', to: 'hashtags#show',      as: :hashtag
 ```
 
 The helper generating the link relies on it.
