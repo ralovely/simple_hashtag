@@ -5,18 +5,18 @@ describe SimpleHashtag do
   describe ".hashtag" do
     context "regex" do
       it "match valid hashtags" do
-        text = "It's a dangerous business, #Frodo, going out your door."
+        text = "#It is a dangerous business, #Frodo, going out your door."
         text += "You step onto #the-road,"
         text += "and if you don't keep #your_feet,"
         text += "there's no #know1ng where you might be swept off to."
         match = Post.new().scan_for_hashtags(text)
-        match.should eq [["#Frodo", "Frodo"], ["#the-road", "the-road"], ["#your_feet", "your_feet"], ["#know1ng", "know1ng"]]
+        match.should eq [["#It", "It"], ["#Frodo", "Frodo"], ["#the-road", "the-road"], ["#your_feet", "your_feet"], ["#know1ng", "know1ng"]]
       end
 
       it "doesn't match things that look like hashtags but are not" do
         text = "And some things that should not # have been forgotten were lost."
         text += "History became legend#. Legend became myth."
-        text += "And for two and a half t#ousand years, the ring﻿ passed out of all knowledge."
+        text += "And for #2500 years, the ring﻿ passed out of all knowledge."
         match = Post.new().scan_for_hashtags(text)
         match.should eq []
       end
