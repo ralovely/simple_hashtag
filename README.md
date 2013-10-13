@@ -153,6 +153,15 @@ posts_and_picts = hashtag.hattaggables
 posts_and_picts.sort_by! { |p| p.created_at }
 ```
 
+To avoid the N+1 query problem, use the hashtagged_ids_for_type(type) method
+to retrieve the IDs for the items instead:
+
+```ruby
+hashtag = SimpleHashtag.find_by_name("RubyRocks")
+@comment_ids = @hashtag.hashtagged_ids_for_type("Comment") if @hashtag
+@comments = Comment.where(:id => @hashtagged_elements)
+```
+
 ### find_by
 
 To preserve coherence, Hashtags are stored downcased.
