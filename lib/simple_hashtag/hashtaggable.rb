@@ -22,7 +22,7 @@ module SimpleHashtag
         parsed_hashtags = []
         array_of_hashtags_as_string = scan_for_hashtags(hashtaggable_content)
         array_of_hashtags_as_string.each do |s|
-          parsed_hashtags << Hashtag.find_or_create_by(name: s[1])
+          parsed_hashtags << Hashtag.find_or_create_by_name(s[1])
         end
         parsed_hashtags
       end

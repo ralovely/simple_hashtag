@@ -99,5 +99,16 @@ describe SimpleHashtag do
       p.hashtags.count.should eq 3
       p.hashtags.map(&:to_s).should eq ["rain-curtain", "silver", "see"]
     end
+
+    it "doesn't duplicate on mixed case" do
+      ActiveRecord::Base.subclasses.each(&:delete_all)
+      Post.create(body: "Certainty of death, small #chance of success.")
+      Post.create(body: "Certainty of death, small #Chance of success.")
+
+      SimpleHashtag::Hashtag.count.should eq 1
+      h = SimpleHashtag::Hashtag.last
+      h.name.should eq "chance"
+      h.hashtaggables.count.should eq 2
+     end
   end
 end

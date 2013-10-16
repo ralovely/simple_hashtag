@@ -4,6 +4,8 @@ module SimpleHashtag
 
     has_many :hashtaggings
 
+    validates :name, uniqueness: true
+
     # TODO Beef up the regex (ie.:what if content is HTML)
     # this is how Twitter does it:
     # https://github.com/twitter/twitter-text-rb/blob/master/lib/twitter-text/regex.rb
@@ -12,6 +14,10 @@ module SimpleHashtag
     def self.find_by_name(name)
       Hashtag.where("lower(name) =?", name.downcase).first
     end
+    def self.find_or_create_by_name(name, &block)
+      find_by_name(name) || create(name: name, &block)
+    end
+
 
     def name=(val)
       write_attribute(:name, val.downcase)
