@@ -41,14 +41,25 @@ describe SimpleHashtag do
       tag.name.should eq "weirdcase"
     end
 
-    it "knows about its hashtaggables" do
-      Post.create(body: "I thought up an ending for my #book.")
-      Picture.create(caption: "Some who have read the #book.")
+    context "knows about its hashtaggables" do
+      before do
+        Post.create(body: "I thought up an ending for my #book.")
+        Picture.create(caption: "Some who have read the #book.")
+      end
+      it "their numbers" do
+        tag = SimpleHashtag::Hashtag.find_by_name("book")
+        tag.hashtaggables.size.should eq 2
+        tag.hashtaggables.first.body.should eq "I thought up an ending for my #book."
+        tag.hashtaggables.last.caption.should eq "Some who have read the #book."
+      end
 
-      tag = SimpleHashtag::Hashtag.find_by_name("book")
-      tag.hashtaggables.size.should eq 2
-      tag.hashtaggables.first.body.should eq "I thought up an ending for my #book."
-      tag.hashtaggables.last.caption.should eq "Some who have read the #book."
+      it "their types" do
+        tag = SimpleHashtag::Hashtag.find_by_name("book")
+        tag.hashtagged_types.size.should eq 2
+        tag.hashtagged_types.should eq ["Post", "Picture"]
+        tag.hashtagged_ids_for_type("Post").should include(Post.last.id)
+        tag.hashtagged_ids_for_type("Picture").should include(Picture.last.id)
+      end
     end
 
     it "can clean the DB from orphan tags" do

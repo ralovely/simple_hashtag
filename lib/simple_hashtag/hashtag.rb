@@ -31,14 +31,21 @@ module SimpleHashtag
       self.hashtaggings.includes(:hashtaggable).collect { |h| h.hashtaggable }
     end
 
-    def hashtagged_ids_for_type(type)
-      hashtagged_ids ||= Array.new
+    def hashtagged_types
+      self.hashtaggings.pluck(:hashtaggable_type).uniq
+    end
+
+    def hashtagged_ids_by_types
+      hashtagged_ids ||= {}
       self.hashtaggings.each do |h|
-        if h.hashtaggable_type == type
-          hashtagged_ids << h.hashtaggable_id
-        end
+        hashtagged_ids[h.hashtaggable_type] ||= Array.new
+        hashtagged_ids[h.hashtaggable_type] << h.hashtaggable_id
       end
-      return hashtagged_ids
+      hashtagged_ids
+    end
+
+    def hashtagged_ids_for_type(type)
+      hashtagged_ids_by_types[type]
     end
 
     def to_s
