@@ -142,8 +142,6 @@ Improvements for this method are listed in the Todo section below.
 ## Gotchas
 ### Association Query
 The association between a Hashtag and your models is a polymorphic many-to-many.
-When querying the polymorphic association from the other side (tag.hashtaggables),
-we perform a DB query for each hashtaggable, resulting in an n+1 query.
 
 The object returned by the query is an array, not an Arel query, so you can't chain (i.e.: to specify the order), and should do it by hand:
 
@@ -151,15 +149,6 @@ The object returned by the query is an array, not an Arel query, so you can't ch
 hashtag = SimpleHashtag.find_by_name("RubyRocks")
 posts_and_picts = hashtag.hattaggables
 posts_and_picts.sort_by! { |p| p.created_at }
-```
-
-To avoid the N+1 query problem, use the hashtagged_ids_for_type(type) method
-to retrieve the IDs for the items instead:
-
-```ruby
-hashtag = SimpleHashtag.find_by_name("RubyRocks")
-@comment_ids = @hashtag.hashtagged_ids_for_type("Comment") if @hashtag
-@comments = Comment.where(:id => @hashtagged_elements)
 ```
 
 ### find_by

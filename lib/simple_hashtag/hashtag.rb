@@ -28,7 +28,7 @@ module SimpleHashtag
     end
 
     def hashtaggables
-      self.hashtaggings.collect { |h| h.hashtaggable }
+      self.hashtaggings.includes(:hashtaggable).collect { |h| h.hashtaggable }
     end
 
     def hashtagged_ids_for_type(type)
