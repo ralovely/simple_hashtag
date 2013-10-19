@@ -31,6 +31,16 @@ module SimpleHashtag
       self.hashtaggings.collect { |h| h.hashtaggable }
     end
 
+    def hashtagged_ids_for_type(type)
+      hashtagged_ids ||= Array.new
+      self.hashtaggings.each do |h|
+        if h.hashtaggable_type == type
+          hashtagged_ids << h.hashtaggable_id
+        end
+      end
+      return hashtagged_ids
+    end
+
     def to_s
       name
     end

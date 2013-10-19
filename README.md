@@ -5,7 +5,7 @@
 
 Ruby gem for Rails that parses, stores, retreives and formats hashtags in your model.
 
-_Simple Hashtag_ is a mix between–well–hashtags, as we know them, and categories.  
+_Simple Hashtag_ is a mix between–well–hashtags, as we know them, and categories.
 It will scan your Active Record attribute for a hashtag, store it in an index, and display a page with each object containing the tag.
 
 It's simple, and like all things simple, it can create a nice effect, quickly.
@@ -27,21 +27,21 @@ Then you have to generate the migration files:
 $ rails g simple_hashtag:migration
 ```
 
-This will create two migration files, one for the `hashtags` table and one for the `hashtagging` table.  
+This will create two migration files, one for the `hashtags` table and one for the `hashtagging` table.
 You will need to run `rake db:migrate` to actually create the tables.
 
-__Optionnally__, you can create views,  
+__Optionnally__, you can create views,
 if only to guide you through your own implementation:
 ```shell
 $ rails g simple_hashtag:views
 ```
 
-This will create a __basic controller__, a __short index view__ and a __small helper__.  
+This will create a __basic controller__, a __short index view__ and a __small helper__.
 It assume your views follow the convention of having a directory named after your model's plural, and a partial named after your model's name.
 ```
 app
 |-- views
-|    |-- posts 
+|    |-- posts
 |    |    |-- _post.html.erb
 ```
 
@@ -50,7 +50,7 @@ app
 
 Just add `include SimpleHashtag::Hashtaggable` in your model.
 
-_Simple Hasthag_ will parse the `body` attribute by default:  
+_Simple Hasthag_ will parse the `body` attribute by default:
 
 ```ruby
 class Post < ActiveRecord::Base
@@ -59,7 +59,7 @@ end
 ```
 
 
-If you need to parse another attribute instead,  
+If you need to parse another attribute instead,
 add `hashtaggable_attribute` followed by the name of your attribute, i.e.:
 ```ruby
 class Picture < ActiveRecord::Base
@@ -68,12 +68,12 @@ class Picture < ActiveRecord::Base
 end
 ```
 
-From here on, if your text contains a hashtag, say _#RubyRocks_,  
-_Simple Hasthag_ will find it, store it in a table and retreive it and its associated object if asked.  
+From here on, if your text contains a hashtag, say _#RubyRocks_,
+_Simple Hasthag_ will find it, store it in a table and retreive it and its associated object if asked.
 Helpers are also available to create a link when displaying the text.
 
 ### Controller and Views
-If you don't want to bother looking at the genrerated controller and views, here is a quick peek.  
+If you don't want to bother looking at the genrerated controller and views, here is a quick peek.
 In a Controller, display all hashtags, or search for a Hashtag and its associated records:
 ```ruby
 class HashtagsController < ApplicationController
@@ -129,20 +129,20 @@ The helper generating the link relies on it.
 
 
 ### Spring Cleaning
-There is a class method `SimpleHashtag::Hashtag#clean_orphans` to remove unused hashtags from the DB.  
-It is currently not hooked, for two reasons:  
-- It is not optimised at all, DB-wise.  
-- Destructive method should be called explicitly.  
+There is a class method `SimpleHashtag::Hashtag#clean_orphans` to remove unused hashtags from the DB.
+It is currently not hooked, for two reasons:
+- It is not optimised at all, DB-wise.
+- Destructive method should be called explicitly.
 
-Knowing all this, you can hook it after each change, or automate it with a Cron job, or even spring-clean manually once in a while.  
+Knowing all this, you can hook it after each change, or automate it with a Cron job, or even spring-clean manually once in a while.
 
 Improvements for this method are listed in the Todo section below.
 
 
 ## Gotchas
 ### Association Query
-The association between a Hashtag and your models is a polymorphic many-to-many.  
-When querying the polymorphic association from the other side (tag.hashtaggables),  
+The association between a Hashtag and your models is a polymorphic many-to-many.
+When querying the polymorphic association from the other side (tag.hashtaggables),
 we perform a DB query for each hashtaggable, resulting in an n+1 query.
 
 The object returned by the query is an array, not an Arel query, so you can't chain (i.e.: to specify the order), and should do it by hand:
@@ -153,11 +153,20 @@ posts_and_picts = hashtag.hattaggables
 posts_and_picts.sort_by! { |p| p.created_at }
 ```
 
+To avoid the N+1 query problem, use the hashtagged_ids_for_type(type) method
+to retrieve the IDs for the items instead:
+
+```ruby
+hashtag = SimpleHashtag.find_by_name("RubyRocks")
+@comment_ids = @hashtag.hashtagged_ids_for_type("Comment") if @hashtag
+@comments = Comment.where(:id => @hashtagged_elements)
+```
+
 ### find_by
 
-To preserve coherence, Hashtags are stored downcased.  
-To ensure coherence, they are also searched downcased.  
-Internally, the model overrides `find_by_name` to perform the downcase query.  
+To preserve coherence, Hashtags are stored downcased.
+To ensure coherence, they are also searched downcased.
+Internally, the model overrides `find_by_name` to perform the downcase query.
 Should you search Hashtags manually you should use the `SimpleHashtag::Hashtag#find_by_name` method, instead of `SimpleHashtag::Hashtag.find_by(name: 'RubyRocks')`
 
 
@@ -166,9 +175,9 @@ Should you search Hashtags manually you should use the `SimpleHashtag::Hashtag#f
 _Simple Hashtag_ is in its very early stage and would need a lot of love to reach 1.0.0.
 Among the many improvement areas:
 
-- Make the Regex that parses the text for the hashtag much more robust.  
-  This is how Twitter does it:  
-  [https://github.com/twitter/twitter-text-rb/blob/master/lib/twitter-text/regex.rb](https://github.com/twitter/twitter-text-rb/blob/master/lib/twitter-text/regex.rb)  
+- Make the Regex that parses the text for the hashtag much more robust.
+  This is how Twitter does it:
+  [https://github.com/twitter/twitter-text-rb/blob/master/lib/twitter-text/regex.rb](https://github.com/twitter/twitter-text-rb/blob/master/lib/twitter-text/regex.rb)
   (Yes, that's 362 lines of regex. Neat.)
 - Allow for multiple hashtagable attributes on the same model
 - Allow a change in the name of the classes and tables to avoid conflicts
@@ -179,8 +188,8 @@ Among the many improvement areas:
 
 ## Contributing
 
-All contributions are welcome.  
-I might not develop new features (unless a project does require it),  
+All contributions are welcome.
+I might not develop new features (unless a project does require it),
 but I will definitely merge any interesting feature or bug fix quickly.
 
 You know the drill:
