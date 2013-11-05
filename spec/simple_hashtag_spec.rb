@@ -62,7 +62,20 @@ describe SimpleHashtag do
       end
     end
 
+    it "is destroyed whith parent" do
+      ActiveRecord::Base.subclasses.each(&:delete_all)
+      Post.create(body: "Certainty of death, small chance of #success.")
+      Post.create(body: "Certainty of death, small chance of #success.")
+      p = Post.last
+      p.destroy
+
+      tag = SimpleHashtag::Hashtag.find_by_name("success")
+      tag.hashtaggables.size.should eq 1
+      tag.hashtaggings.size.should eq 1
+    end
+
     it "can clean the DB from orphan tags" do
+      ActiveRecord::Base.subclasses.each(&:delete_all)
       Post.create(body: "Certainty of death, small #chance of success.")
       p = Post.last
       p.body = "What are we #waiting for?"

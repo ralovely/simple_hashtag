@@ -3,7 +3,7 @@ module SimpleHashtag
     extend ActiveSupport::Concern
 
     included do
-      has_many :hashtaggings, as: :hashtaggable,  class_name: "SimpleHashtag::Hashtagging"
+      has_many :hashtaggings, as: :hashtaggable,  class_name: "SimpleHashtag::Hashtagging", dependent: :destroy
       has_many :hashtags, through: :hashtaggings, class_name: "SimpleHashtag::Hashtag"
 
       before_save :update_hashtags
