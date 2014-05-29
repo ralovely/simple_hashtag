@@ -30,7 +30,7 @@ module SimpleHashtag
     end
 
     def hashtaggables(conditions = {})
-      self.hashtaggings.includes(:hashtaggable).where(conditions).collect {|h| h.hashtaggable}
+      self.hashtaggings.includes(:hashtaggable).where(conditions).collect {|h| h.unscoped.hashtaggable}
     end
 
     def hashtagged_types
