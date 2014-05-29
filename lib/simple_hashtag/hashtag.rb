@@ -1,3 +1,4 @@
+require "protected_attributes"
 module SimpleHashtag
   class Hashtag < ActiveRecord::Base
     self.table_name = "simple_hashtag_hashtags"
@@ -5,6 +6,7 @@ module SimpleHashtag
     has_many :hashtaggings
 
     validates :name, uniqueness: true
+    attr_accessible :name
 
     # TODO Beef up the regex (ie.:what if content is HTML)
     # this is how Twitter does it:
@@ -27,8 +29,8 @@ module SimpleHashtag
       read_attribute(:name).downcase
     end
 
-    def hashtaggables
-      self.hashtaggings.includes(:hashtaggable).collect { |h| h.hashtaggable }
+    def hashtaggables(conditions = {})
+      self.hashtaggings.includes(:hashtaggable).where(conditions).collect {|h| h.unscoped.hashtaggable}
     end
 
     def hashtagged_types

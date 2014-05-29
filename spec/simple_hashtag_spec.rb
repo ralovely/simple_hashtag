@@ -60,6 +60,13 @@ describe SimpleHashtag do
         tag.hashtagged_ids_for_type("Post").should include(Post.last.id)
         tag.hashtagged_ids_for_type("Picture").should include(Picture.last.id)
       end
+
+      it "with there conditions" do
+        tag = SimpleHashtag::Hashtag.find_by_name("book")
+        tag.hashtaggables.size.should eq 2
+        tag.hashtaggables(:hashtaggable_id => Post.last.id, :hashtaggable_type => 'Post').size.should eq 1
+      end
+
     end
 
     it "is destroyed whith parent" do
