@@ -68,6 +68,30 @@ class Picture < ActiveRecord::Base
 end
 ```
 
+If you only want hashtags created based on conditions,
+you can create a guard with `hashtag_if`:
+
+```ruby
+class Post < ActiveRecord::Base
+  include SimpleHashtag::Hashtaggable
+
+  hashtag_if ->(post) { post.body =~ /ruby/ }
+end
+
+# or...
+
+class Post < ActiveRecord::Base
+  include SimpleHashtag::Hashtaggable
+
+  hashtag_if :about_ruby?
+
+  def about_ruby?
+    body =~ /ruby/
+  end
+end
+```
+
+
 From here on, if your text contains a hashtag, say _#RubyRocks_,
 _Simple Hasthag_ will find it, store it in a table and retreive it and its associated object if asked.
 Helpers are also available to create a link when displaying the text.
