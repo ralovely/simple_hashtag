@@ -134,5 +134,54 @@ describe SimpleHashtag do
       h.name.should eq "chance"
       h.hashtaggables.count.should eq 2
      end
+
+    context "with a lamdba guard" do
+      class GuardedPost < Post
+        hashtag_if lambda { |post| post.body =~ /Community/ }
+      end
+
+      it "creates hashtags if the guard is fulfilled" do
+        GuardedPost.create(body: 'Community saved! #sixseasonsandamovie')
+        p = Post.last
+        p.hashtags.first.name.should eq 'sixseasonsandamovie'
+      end
+
+      it "does not create hashtags if the guard is notfulfilled" do
+        GuardedPost.create(body: 'To boldly go... #startrek')
+        p = Post.last
+        p.hashtags.should == []
+      end
+    end
+
+    context "with a method guard" do
+      class MethodGuardedPost < Post
+        hashtag_if :is_community?
+
+        def is_community?
+          body =~ /Community/
+        end
+      end
+
+      it "creates hashtags if the guard is fulfilled" do
+        MethodGuardedPost.create(body: 'Community saved! #sixseasonsandamovie')
+        Post.last.hashtags.first.name.should eq 'sixseasonsandamovie'
+      end
+
+      it "does not create hashtags if the guard is notfulfilled" do
+        MethodGuardedPost.create(body: 'To boldly go... #startrek')
+        Post.last.hashtags.should == []
+      end
+    end
+
+    context "with an invalid guard" do
+      class PoorlyGuardedPost < Post
+        hashtag_if :this_isnt_even_real
+      end
+    end
+
+    it "raises an error" do
+      p = PoorlyGuardedPost.new(body: '#doesntmatter #thisisgoingtofail')
+      expect{ p.save! }.to raise_error SimpleHashtag::Hashtaggable::InvalidHashtagGuard
+    end
   end
 end

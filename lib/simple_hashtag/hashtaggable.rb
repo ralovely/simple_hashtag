@@ -2,6 +2,8 @@ module SimpleHashtag
   module Hashtaggable
     extend ActiveSupport::Concern
 
+    class InvalidHashtagGuard < ArgumentError; end
+
     included do
       has_many :hashtaggings, as: :hashtaggable,  class_name: "SimpleHashtag::Hashtagging", dependent: :destroy
       has_many :hashtags, through: :hashtaggings, class_name: "SimpleHashtag::Hashtag"
@@ -15,7 +17,21 @@ module SimpleHashtag
       end
 
       def update_hashtags
+        if hashtag_guard.present?
+          if hashtag_guard.respond_to?(:call)
+            return unless hashtag_guard.call self
+          elsif self.respond_to? hashtag_guard
+            return unless self.send hashtag_guard
+          else
+            raise InvalidHashtagGuard
+          end
+        end
+
         self.hashtags = parsed_hashtags
+      end
+
+      def hashtag_guard
+        self.class.hashtag_guard
       end
 
       def parsed_hashtags
@@ -36,9 +52,14 @@ module SimpleHashtag
 
     module ClassMethods
       attr_accessor :hashtaggable_attribute_name
+      attr_accessor :hashtag_guard
 
       def hashtaggable_attribute(name=nil)
         self.hashtaggable_attribute_name ||= name || :body
+      end
+
+      def hashtag_if(guard)
+        self.hashtag_guard = guard
       end
     end
   end
