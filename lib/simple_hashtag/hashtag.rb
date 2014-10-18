@@ -3,6 +3,8 @@ module SimpleHashtag
     self.table_name = "simple_hashtag_hashtags"
 
     has_many :hashtaggings
+    
+    attr_accessible :name
 
     validates :name, uniqueness: true
 
