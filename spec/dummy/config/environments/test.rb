@@ -29,8 +29,13 @@ Dummy::Application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
 
-  # Raise exception on mass assignment protection for Active Record models
-  config.active_record.mass_assignment_sanitizer = :strict
+  if ActiveRecord::VERSION::MAJOR.to_i < 4
+    # Raise exception on mass assignment protection for Active Record models.
+    config.mass_assignment_sanitizer = :strict
+    # Log the query plan for queries taking more than this (works
+    # with SQLite, MySQL, and PostgreSQL).
+    config.auto_explain_threshold_in_seconds = 0.5
+  end
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr

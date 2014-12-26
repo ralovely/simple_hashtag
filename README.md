@@ -189,3 +189,9 @@ You know the drill:
 4. Commit your changes (`git commit -am 'Add some feature'`)
 5. Push to the branch (`git push origin my-new-feature`)
 6. Create new Pull Request
+
+To run tests:
+
+1. Go to spec/dummy in the forked folder
+2. Run migrations `rake db:test:prepare`
+3. Be happy!s
