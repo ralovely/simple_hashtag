@@ -69,7 +69,7 @@ end
 ```
 
 From here on, if your text contains a hashtag, say _#RubyRocks_,
-_Simple Hasthag_ will find it, store it in a table and retreive it and its associated object if asked.
+_Simple Hashtag_ will find it, store it in a table and retreive it and its associated object if asked.
 Helpers are also available to create a link when displaying the text.
 
 ### Controller and Views
