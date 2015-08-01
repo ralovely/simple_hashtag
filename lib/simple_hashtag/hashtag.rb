@@ -20,11 +20,11 @@ module SimpleHashtag
 
 
     def name=(val)
-      write_attribute(:name, val.downcase)
+      write_attribute(:name, val)
     end
 
     def name
-      read_attribute(:name).downcase
+      read_attribute(:name)
     end
 
     def hashtaggables
