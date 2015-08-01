@@ -12,7 +12,7 @@ module SimpleHashtag
     HASHTAG_REGEX = /[\u0600-\u06FF]|[\u0750-\u077F]|[\u0590-\u05FF]|[\uFE70-\uFEFF]/m
 
     def self.find_by_name(name)
-      Hashtag.where("lower(name) =?", name.downcase).first
+      Hashtag.where("lower(name) =?", name).first
     end
     def self.find_or_create_by_name(name, &block)
       find_by_name(name) || create(name: name, &block)
