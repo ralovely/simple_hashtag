@@ -9,7 +9,7 @@ module SimpleHashtag
     # TODO Beef up the regex (ie.:what if content is HTML)
     # this is how Twitter does it:
     # https://github.com/twitter/twitter-text-rb/blob/master/lib/twitter-text/regex.rb
-    HASHTAG_REGEX = /\B#(\w+)/i
+    HASHTAG_REGEX = /[\u0600-\u06FF]|[\u0750-\u077F]|[\u0590-\u05FF]|[\uFE70-\uFEFF]/m
 
     def self.find_by_name(name)
       Hashtag.where("lower(name) =?", name.downcase).first
