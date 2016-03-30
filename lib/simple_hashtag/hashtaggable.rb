@@ -15,6 +15,7 @@ module SimpleHashtag
       end
 
       def update_hashtags
+        return unless self.changed.include?(self.class.hashtaggable_attribute_name.to_s) || self.destroyed?
         self.hashtags = parsed_hashtags
       end
 
