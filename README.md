@@ -147,7 +147,7 @@ The object returned by the query is an array, not an Arel query, so you can't ch
 
 ```ruby
 hashtag = SimpleHashtag.find_by_name("RubyRocks")
-posts_and_picts = hashtag.hattaggables
+posts_and_picts = hashtag.hashtaggables
 posts_and_picts.sort_by! { |p| p.created_at }
 ```
 
